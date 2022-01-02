@@ -1,5 +1,8 @@
 package view;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
@@ -9,14 +12,20 @@ import javafx.scene.text.Font;
 
 public class GameButton extends Button {
 	
-	private final String BUTTON_PRESSED = "-fx-background-color: transparent; -fx-background-image: url('/assets/longBtnPressed.png');";
-	private final String BUTTON_RELEASED = "-fx-background-color: transparent; -fx-background-image: url('/assests/longBtnReleased.png');";
+	private final String FONT_PATH = "src/assets/SpaceMissionFont.otf";
+	private final String BUTTON_PRESSED = "-fx-background-color: transparent; -fx-background-image: url('/assets/btnPressed.png');";
+	private final String BUTTON_RELEASED = "-fx-background-color: transparent; -fx-background-image: url('/assets/btnReleased.png');";
 	
 	public GameButton(String text) {
 		// setting text
 		setText(text);
 		// setting font
-		setFont(Font.font("Verdana",23));
+		try {
+			setFont(Font.loadFont(new FileInputStream(FONT_PATH), 23));
+			}
+			catch(FileNotFoundException e) {
+				setFont(Font.font("Verdana",23));
+			}
 		// setting length and width
 		setPrefWidth(190);
 		setPrefHeight(49);
