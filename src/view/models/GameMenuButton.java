@@ -1,4 +1,4 @@
-package view;
+package view.models;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

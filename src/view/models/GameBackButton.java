@@ -1,4 +1,4 @@
-package view;
+package view.models;
 
 public class GameBackButton extends GameButton {
 

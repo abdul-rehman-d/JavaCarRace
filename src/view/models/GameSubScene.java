@@ -1,7 +1,4 @@
-package view;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+package view.models;
 
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -13,8 +10,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 public class GameSubScene extends SubScene {
@@ -22,7 +17,6 @@ public class GameSubScene extends SubScene {
 	private final String PATH = "/assets/panel.png";
 	private boolean isHidden;
 	GameBackButton backButton;
-	private final String FONT_PATH = "src/assets/SpaceMissionFont.otf";
 	
 	public GameSubScene(String text) {
 		super(new AnchorPane(), 500, 500);
@@ -48,14 +42,9 @@ public class GameSubScene extends SubScene {
 		});
 		root.getChildren().add(backButton);
 		
-		Text title = new Text();
+		GameText title = new GameText();
 		title.setText(text);
-		try {
-			title.setFont(Font.loadFont(new FileInputStream(FONT_PATH), 48));
-			}
-		catch(FileNotFoundException e) {
-				title.setFont(Font.font("Verdana",48));
-			}
+		title.applyTitleFont(48);
 		title.setLayoutX(120);
 		title.setLayoutY(100);
 		root.getChildren().add(title);
