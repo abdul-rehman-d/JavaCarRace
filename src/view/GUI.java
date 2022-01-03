@@ -2,7 +2,6 @@ package view;
 
 import game.MainGame;
 import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
@@ -36,6 +35,7 @@ public class GUI {
 	GameSubScene highScoreSubScene;
 	GameText highScoreText;
 	GameSubScene creditsSubScene;
+	GameSubScene startSubScene;
 	
 	Score score;
 	
@@ -51,8 +51,29 @@ public class GUI {
 		menuStage.getIcons().add(new Image("/assets/logo.png"));
 		menuStage.setResizable(false);
         menuStage.setTitle("Trails - A 2D Car Game");
-        // playing intro animation
-        
+        // playing intro animation  
+		playIntro();
+		
+	}
+
+	private void playIntro() {
+		ImageView intro = new ImageView(new Image("/assets/intro.png", WIDTH, HEIGHT, false, true));
+		menuPane.getChildren().add(intro);
+		FadeTransition animation = new FadeTransition(Duration.seconds(3), intro);
+		animation.setFromValue(1.0);
+		animation.setToValue(0.0);
+		animation.setOnFinished(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				menuPane.getChildren().remove(intro);
+				initializeMenu();
+			}
+			
+		});
+		animation.play();
+	}
+	private void initializeMenu() {
 		// adding logo to menu
 		Image logo = new Image("/assets/logo.png");
 		ImageView logoView = new ImageView(logo);
@@ -67,16 +88,7 @@ public class GUI {
 		score = new Score();
 		creatHighScoreSubScene();
 		createCreditsSubScene();
-		playIntro();
-		
-	}
-
-	private void playIntro() {
-		ImageView intro = new ImageView(new Image("/assets/intro.png", WIDTH, HEIGHT, false, true));
-		menuPane.getChildren().add(intro);
-		TranslateTransition animation2 = new TranslateTransition(Duration.seconds(5), intro);
-		animation2.setToY(HEIGHT);
-		animation2.play();
+		createStartSubScene();
 	}
 
 	public Stage getMainStage() {
@@ -98,7 +110,7 @@ public class GUI {
 
 			@Override
 			public void handle(ActionEvent event) {
-				MainGame game = new MainGame(menuStage);
+				startSubScene.moveScene();
 			}
 			
 		});
@@ -173,7 +185,7 @@ public class GUI {
 	}
 	
 	private void createCreditsSubScene() {
-creditsSubScene = new GameSubScene("CREDITS");
+		creditsSubScene = new GameSubScene("CREDITS");
 		
 		GameText name1 = new GameText(), name2 = new GameText(), des1 = new GameText(), des2 = new GameText();
 		name1.setText("Abdul Rehman Daniyal");
@@ -200,5 +212,66 @@ creditsSubScene = new GameSubScene("CREDITS");
 		menuPane.getChildren().add(creditsSubScene);
 	}
 	
+	private void createStartSubScene(){
+		startSubScene = new GameSubScene("PLAY");
+		
+		// game
+		GameText heading1 = new GameText();
+		heading1.setText("GAME:");
+		heading1.setLayoutX(65);
+		heading1.setLayoutY(140);
+		heading1.applyParagraphFont(24);
+		GameText des1 = new GameText();
+		des1.setText("You have 3 lives.\nAvoid coming cars to live!");
+		des1.setLayoutX(69);
+		des1.setLayoutY(165);
+		des1.applyParagraphFont(18);
+		GameText des2 = new GameText();
+		des2.setText("Collect bolt symbols \nto gain point.\nBeware! Your speed increases with the points!");
+		des2.setLayoutX(69);
+		des2.setLayoutY(220);
+		des2.applyParagraphFont(18);
+		ImageView car = new ImageView(new Image("/assets/obstacle_car1.png", 20, 45, false, true));
+		car.setLayoutX(270);
+		car.setLayoutY(145);
+		ImageView powerup = new ImageView(new Image("/assets/powerup.png", 30, 30, false, true));
+		powerup.setLayoutX(220);
+		powerup.setLayoutY(210);
+		
+		// controls
+		GameText heading2 = new GameText();
+		heading2.setText("CONTROLS:");
+		heading2.setLayoutX(65);
+		heading2.setLayoutY(320);
+		heading2.applyParagraphFont(24);
+		GameText des3 = new GameText();
+		des3.setText("LEFT Arrow Key / 'A' Key:\nTo Go Left.");
+		des3.setLayoutX(69);
+		des3.setLayoutY(345);
+		des3.applyParagraphFont(18);
+		GameText des4 = new GameText();
+		des4.setText("RIGHT Arrow Key / 'D' Key:\nTo Go Right.");
+		des4.setLayoutX(69);
+		des4.setLayoutY(390);
+		des4.applyParagraphFont(18);
+		
+		// go button
+		GameMenuButton goButton = new GameMenuButton("GO!");
+		goButton.setLayoutX(280);
+		goButton.setLayoutY(400);
+		goButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				startSubScene.moveScene();
+				MainGame game = new MainGame(menuStage);
+				game.initialize();
+			}
+			
+		});
+		
+		startSubScene.getPane().getChildren().addAll(heading1, des1, des2, heading2, des3, des4, car, powerup, goButton);
+		menuPane.getChildren().add(startSubScene);
+	}
 	
 }

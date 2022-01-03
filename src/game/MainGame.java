@@ -1,13 +1,11 @@
 package game;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
+import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -15,8 +13,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import score.Score;
 import view.models.GameMenuButton;
 import view.models.GameSubScene;
@@ -54,6 +52,8 @@ public class MainGame {
 	private GameText livesLabel;
 	private ImageView panel;
 	private final static String PANEL = "assets/panel.png";
+	// velocity
+	private int velocity;
 	
 	GameSubScene endingSubScene;
 	
@@ -86,6 +86,7 @@ public class MainGame {
 		// stats
 		lives = 3;
 		points = 0;
+		velocity=1;
 		
 		//showing stats
 		panel = new ImageView(new Image(PANEL, 100, 60, false, true));
@@ -116,6 +117,9 @@ public class MainGame {
 			placeObject(obstacleCars[i-1]);
 			gamePane.getChildren().add(obstacleCars[i-1]);
 		}
+	}
+	
+	public void initialize() {
 		// initializing game loop
 		gameTimer = new AnimationTimer() {
 
@@ -150,8 +154,8 @@ public class MainGame {
 	}
 	
 	private void moveGameBackground() {
-		gridPane1.setLayoutY(gridPane1.getLayoutY() +1.2);
-		gridPane2.setLayoutY(gridPane2.getLayoutY() +1.2);
+		gridPane1.setLayoutY(gridPane1.getLayoutY() +(1.2*velocity));
+		gridPane2.setLayoutY(gridPane2.getLayoutY() +(1.2*velocity));
 		
 		if(gridPane1.getLayoutY() >= 700) {
 			gridPane1.setLayoutY(-700);
@@ -214,10 +218,10 @@ public class MainGame {
 	}
 	
 	private void moveObjects() {
-		powerup.setLayoutY(powerup.getLayoutY() + 5);
+		powerup.setLayoutY(powerup.getLayoutY() + (5*velocity));
 		
 		for(int i = 0; i < obstacleCars.length; i++) {
-			obstacleCars[i].setLayoutY(obstacleCars[i].getLayoutY() + 6);
+			obstacleCars[i].setLayoutY(obstacleCars[i].getLayoutY() + (6*velocity));
 		}
 	}
 	
@@ -232,10 +236,6 @@ public class MainGame {
 		}
 	}
 	
-//	private double calculateDistance(double x1, double x2, double y1, double y2) {
-//		return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
-//	}
-	
 	private void checkCollison() {
 		// checking powerup
 		if(player.getBoundsInParent().intersects(powerup.getBoundsInParent())) {
@@ -246,58 +246,71 @@ public class MainGame {
 			if(player.getBoundsInParent().intersects(obstacleCars[i].getBoundsInParent())) {
 				placeObject(obstacleCars[i]);
 				lives--;
+				playHitAnimation();
 			}
 		}
 	}
 	
+	private void playHitAnimation() {
+		FadeTransition animation = new FadeTransition(Duration.millis(200), player);
+		animation.setFromValue(1.0);
+		animation.setToValue(0.2);
+		animation.setAutoReverse(true);
+		animation.setCycleCount(4);
+		animation.play();
+		
+	}
+
 	private void updateStats() {
 		if(lives==0) {
 			gameTimer.stop();
 			saveScore();
-//			createEndingSubScene();
-			end();
+			showEndingMessage();
+		}
+		// to increase general speed of the game with points reaching multiples of 5
+		if(points%5==0 && points!=0) {
+			velocity += 0.5;
 		}
 		pointsLabel.setText("Points: " + points);
 		livesLabel.setText("Lives:   " + lives);
 	}
 	
-//	private void createEndingSubScene() {
-//		ImageView imageView = new ImageView(new Image("assets/panel/png", 300,300,false, true));
-//		imageView.setLayoutY(HEIGHT/2 - 300);
-//		imageView.setLayoutX(WIDTH/2 - 300);
-//		gamePane.getChildren().add(imageView);
-//		GameText label1 = new GameText();
-//		label1.setText("You earned:");
-//		label1.setLayoutX(HEIGHT/2 - 300);
-//		label1.setLayoutY(180);
-//		label1.applyParagraphFont(20);
-//		GameText label2 = new GameText();
-//		label2.setText(""+points);
-//		label2.setLayoutX(240);
-//		label2.setLayoutY(200);
-//		label2.applyParagraphFont(20);
-//		GameText label3 = new GameText();
-//		label3.setText("Points!");
-//		label3.setLayoutX(225);
-//		label3.setLayoutY(220);
-//		label3.applyParagraphFont(20);
-//		GameMenuButton confirm = new GameMenuButton("okay");
-//		confirm.setLayoutX(500/2 - 190);
-//		confirm.setLayoutY(300);
-//		confirm.setOnAction(new EventHandler<ActionEvent>() {
-//
-//			@Override
-//			public void handle(ActionEvent arg0) {
-//				end();
-//			}
-//			
-//		});
-//		gamePane.getChildren().add(label1);
-//		gamePane.getChildren().add(label2);
-//		gamePane.getChildren().add(label3);
-//		gamePane.getChildren().add(confirm);
-//		
-//	}
+	private void showEndingMessage() {
+		ImageView imageView = new ImageView(new Image("assets/panel.png", 300,300,false, true));
+		imageView.setLayoutY(200);
+		imageView.setLayoutX(101);
+		gamePane.getChildren().add(imageView);
+		GameText label1 = new GameText();
+		label1.setText("You Earned:");
+		label1.setLayoutX(180);
+		label1.setLayoutY(270);
+		label1.applyTitleFont(30);
+		GameText label2 = new GameText();
+		label2.setText(""+points);
+		label2.setLayoutX(250);
+		label2.setLayoutY(320);
+		label2.applyTitleFont(30);
+		GameText label3 = new GameText();
+		label3.setText("Points!");
+		label3.setLayoutX(210);
+		label3.setLayoutY(380);
+		label3.applyTitleFont(30);
+		GameMenuButton confirm = new GameMenuButton("okay");
+		confirm.setLayoutX(155);
+		confirm.setLayoutY(400);
+		confirm.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent arg0) {
+				end();
+			}
+			
+		});
+		gamePane.getChildren().add(label1);
+		gamePane.getChildren().add(label2);
+		gamePane.getChildren().add(label3);
+		gamePane.getChildren().add(confirm);
+	}
 
 	private void end() {
 		gameStage.close();
