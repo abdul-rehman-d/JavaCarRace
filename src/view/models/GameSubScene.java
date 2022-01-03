@@ -69,4 +69,5 @@ public class GameSubScene extends SubScene {
 	public AnchorPane getPane() {
 		return (AnchorPane) this.getRoot();
 	}
+	
 }

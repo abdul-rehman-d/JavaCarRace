@@ -1,9 +1,11 @@
 package game;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -15,6 +17,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import score.Score;
+import view.models.GameMenuButton;
+import view.models.GameSubScene;
 import view.models.GameText;
 
 public class MainGame {
@@ -50,7 +55,7 @@ public class MainGame {
 	private ImageView panel;
 	private final static String PANEL = "assets/panel.png";
 	
-	int lane;
+	GameSubScene endingSubScene;
 	
 	public MainGame(Stage menuStage){
 		// initializing
@@ -81,7 +86,6 @@ public class MainGame {
 		// stats
 		lives = 3;
 		points = 0;
-		lane = 0;
 		
 		//showing stats
 		panel = new ImageView(new Image(PANEL, 100, 60, false, true));
@@ -248,21 +252,61 @@ public class MainGame {
 	
 	private void updateStats() {
 		if(lives==0) {
+			gameTimer.stop();
+			saveScore();
+//			createEndingSubScene();
 			end();
 		}
 		pointsLabel.setText("Points: " + points);
 		livesLabel.setText("Lives:   " + lives);
 	}
 	
+//	private void createEndingSubScene() {
+//		ImageView imageView = new ImageView(new Image("assets/panel/png", 300,300,false, true));
+//		imageView.setLayoutY(HEIGHT/2 - 300);
+//		imageView.setLayoutX(WIDTH/2 - 300);
+//		gamePane.getChildren().add(imageView);
+//		GameText label1 = new GameText();
+//		label1.setText("You earned:");
+//		label1.setLayoutX(HEIGHT/2 - 300);
+//		label1.setLayoutY(180);
+//		label1.applyParagraphFont(20);
+//		GameText label2 = new GameText();
+//		label2.setText(""+points);
+//		label2.setLayoutX(240);
+//		label2.setLayoutY(200);
+//		label2.applyParagraphFont(20);
+//		GameText label3 = new GameText();
+//		label3.setText("Points!");
+//		label3.setLayoutX(225);
+//		label3.setLayoutY(220);
+//		label3.applyParagraphFont(20);
+//		GameMenuButton confirm = new GameMenuButton("okay");
+//		confirm.setLayoutX(500/2 - 190);
+//		confirm.setLayoutY(300);
+//		confirm.setOnAction(new EventHandler<ActionEvent>() {
+//
+//			@Override
+//			public void handle(ActionEvent arg0) {
+//				end();
+//			}
+//			
+//		});
+//		gamePane.getChildren().add(label1);
+//		gamePane.getChildren().add(label2);
+//		gamePane.getChildren().add(label3);
+//		gamePane.getChildren().add(confirm);
+//		
+//	}
+
 	private void end() {
-		gameTimer.stop();
 		gameStage.close();
 		menuStage.show();
-		saveScore();
 	}
 
 	private void saveScore() {
-		Date now = new Date();
+		Score score = new Score();
+		score.save(points);
 	}
 	
 }
