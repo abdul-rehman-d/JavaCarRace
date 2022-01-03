@@ -1,5 +1,6 @@
 package game;
 
+import java.util.Date;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
@@ -119,6 +120,7 @@ public class MainGame {
 				moveGameBackground();
 				moveObjects();
 				checkCollison();
+				updateStats();
 				updateObjects();
 				controlPlayer();
 			}
@@ -226,16 +228,41 @@ public class MainGame {
 		}
 	}
 	
+//	private double calculateDistance(double x1, double x2, double y1, double y2) {
+//		return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+//	}
+	
 	private void checkCollison() {
-		
+		// checking powerup
+		if(player.getBoundsInParent().intersects(powerup.getBoundsInParent())) {
+			placeObject(powerup);
+			points++;
+		}
+		for(int i=0;i<obstacleCars.length; i++) {
+			if(player.getBoundsInParent().intersects(obstacleCars[i].getBoundsInParent())) {
+				placeObject(obstacleCars[i]);
+				lives--;
+			}
+		}
 	}
 	
 	private void updateStats() {
-		
+		if(lives==0) {
+			end();
+		}
+		pointsLabel.setText("Points: " + points);
+		livesLabel.setText("Lives:   " + lives);
 	}
 	
 	private void end() {
-		
+		gameTimer.stop();
+		gameStage.close();
+		menuStage.show();
+		saveScore();
+	}
+
+	private void saveScore() {
+		Date now = new Date();
 	}
 	
 }

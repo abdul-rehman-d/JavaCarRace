@@ -23,7 +23,4 @@ public class GameBackButton extends GameButton {
 	protected void setPressedStyle() {
 		setLayoutY(getLayoutY() + 4); 
 	}
-
-	
-	
 }
