@@ -21,11 +21,6 @@ public class Score {
 			}
 	}
 	
-//	public static void main(String[] args) {
-//		Score score = new Score();
-//		int i = score.getHighestScore();
-//	}
-	
 	
 	public void save(int points){
 		FileWriter writer;

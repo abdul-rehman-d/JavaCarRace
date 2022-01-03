@@ -25,5 +25,4 @@ public class GameText extends Text {
 				setFont(Font.font("Verdana",size));
 			}
 	}
-	
 }
