@@ -10,7 +10,7 @@ public class GameText extends Text {
 
 	public void applyParagraphFont(int size) {
 		try {
-			setFont(Font.loadFont(new FileInputStream("src/assets/BigSpace.ttf"), size));
+			setFont(Font.loadFont(new FileInputStream(".dependencies\\BigSpace.ttf"), size));
 			}
 		catch(FileNotFoundException e) {
 				setFont(Font.font("Verdana",size));
@@ -19,7 +19,7 @@ public class GameText extends Text {
 	
 	public void applyTitleFont(int size) {
 		try {
-			setFont(Font.loadFont(new FileInputStream("src/assets/SpaceMissionFont.otf"), size));
+			setFont(Font.loadFont(new FileInputStream(".dependencies\\SpaceMissionFont.otf"), size));
 			}
 		catch(FileNotFoundException e) {
 				setFont(Font.font("Verdana",size));

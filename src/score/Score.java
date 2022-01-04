@@ -13,7 +13,7 @@ public class Score {
 	String[] scores;
 	
 	public Score() {
-		file = new File("src/score/scroes.txt");
+		file = new File("scroes.txt");
 			if(!file.exists()){
 				try {
 					file.createNewFile();

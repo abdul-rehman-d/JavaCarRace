@@ -6,7 +6,7 @@ import javafx.scene.text.Font;
 
 public class GameMenuButton extends GameButton {
 	
-	private final String FONT_PATH = "src/assets/SpaceMissionFont.otf";
+	private final String FONT_PATH = ".dependencies\\SpaceMissionFont.otf";
 	private final String BUTTON_PRESSED = "-fx-background-color: transparent; -fx-background-image: url('/assets/btnPressed.png');";
 	private final String BUTTON_RELEASED = "-fx-background-color: transparent; -fx-background-image: url('/assets/btnReleased.png');";
 	
